@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mahasiswa;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Mahasiswa;
+use Illuminate\Routing\Controller;
+use Illuminate\Http\Request;
+use App\Models\Kelas;
 
 class MahasiswaController extends Controller
 {
@@ -13,16 +15,10 @@ class MahasiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('mahasiswa.index', [
-            'mahasiswa' => DB::table('mahasiswa')->paginate(3)
-        ]);
-        
-        $mahasiswa = $mahasiswa = DB::table('mahasiswa')->get();
-        $posts = Mahasiswa::orderBy('Nim', 'desc')->paginate(6);
+        $mahasiswa = Mahasiswa::with('kelas')->latest('nim')->paginate(3);
         return view('mahasiswa.index', compact('mahasiswa'));
-        with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     /**
@@ -32,7 +28,8 @@ class MahasiswaController extends Controller
      */
     public function create()
     {
-        return view('mahasiswa.create');
+        $kelas = Kelas::all();
+        return view('mahasiswa.create', ['kelas' => $kelas]);
     }
 
     /**
@@ -50,7 +47,7 @@ class MahasiswaController extends Controller
             'Jurusan' => 'required',
             'Email' => 'required',
             'Alamat' => 'required',
-            'TanggalLahir' => 'required',
+            'TL' => 'required',
             ]);
 
             Mahasiswa::create($request->all());
@@ -97,7 +94,7 @@ class MahasiswaController extends Controller
             'Jurusan' => 'required',
             'Email' => 'required',
             'Alamat' => 'required',
-            'TanggalLahir' => 'required',
+            'TL' => 'required',
             ]);
 
             Mahasiswa::where('nim', $Nim)->first()->update($request->all());
@@ -117,11 +114,10 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.index')
         -> with('success', 'Mahasiswa Berhasil Dihapus');
     }
-
     public function search(Request $request)
     {
-        $search = $request->get('search');
-        $mahasiswa = Mahasiswa::where('nama', 'like', '%' . $search . '%')->simplePaginate(3);
-        return view('mahasiswa.index', compact('mahasiswa'));
+        $keyword = $request->search;
+        $paginate = Mahasiswa::where('nama', 'like', "%" . $keyword . "%")->paginate(3);
+        return view('mahasiswa.index', compact('paginate'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 }

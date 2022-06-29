@@ -29,9 +29,13 @@
                 <input type="Nama" name="Nama" class="form-control" id="Nama" ariadescribedby="Nama" >
             </div>
             <div class="form-group">
-                <label for="Kelas">Kelas</label>
-                <input type="Kelas" name="Kelas" class="form-control" id="Kelas" ariadescribedby="password" >
-            </div>
+            <label for="Kelas">Kelas</label>
+            <select class="form-control" name="Kelas" id="Kelas">
+                @foreach($kelas as $kls)
+                    <option value="{{ $kls->id }}">{{ $kls->nama_kelas }}</option>
+                @endforeach
+            </select>
+        </div>
             <div class="form-group">
                 <label for="Jurusan">Jurusan</label>
                 <input type="Jurusan" name="Jurusan" class="form-control" id="Jurusan" ariadescribedby="Jurusan" >
@@ -45,8 +49,8 @@
                 <input type="Alamat" name="Alamat" class="form-control" id="Alamat" ariadescribedby="Alamat" >
                     </div>
             <div class="form-group">
-                <label for="tl">Tanggal Lahir</label>
-                <input type="tl" name="tl" class="form-control" id="tl" ariadescribedby="tl" >
+                <label for="TL">Tanggal Lahir</label>
+                <input type="TL" name="TL" class="form-control" id="TL" ariadescribedby="TL" >
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
             </form>

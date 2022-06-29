@@ -22,4 +22,9 @@ class Mahasiswa extends Model
         'Alamat',
         'TL',
         ];
+
+        public function kelas()
+        {
+            return $this->belongsTo(Kelas::class);
+        }
 }
